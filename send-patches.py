@@ -16,7 +16,7 @@ def main():
     to_cmd = f"--to-cmd=./scripts/get_maintainer.pl --norolestats -nol {patches}"
     cc_cmd = f"--cc-cmd=./scripts/get_maintainer.pl --norolestats -nom {patches}"
 
-    cmd = ['git', 'send-email', to_cmd, cc_cmd]
+    cmd = ['git', 'send-email']
 
     if args.t is not None:
         for mail_addr in args.t:
@@ -27,6 +27,9 @@ def main():
         for mail_addr in args.c:
             cmd.append('--cc')
             cmd.append(mail_addr)
+
+    cmd.append(to_cmd)
+    cmd.append(cc_cmd)
 
     for patch in args.patch:
         cmd.append(patch)

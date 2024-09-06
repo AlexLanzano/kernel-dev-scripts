@@ -34,17 +34,20 @@ def main():
     parser = argparse.ArgumentParser(description='Generate patch files')
     parser.add_argument('-v', metavar='SERIES_VERSION', type=int, help = 'version of patch series')
     parser.add_argument('-c', metavar='COVER_LETTER', type=str, help = 'cover letter text file')
-    parser.add_argument('num_commits', type=int, help = 'Number of commits to turn into patch files')
+    parser.add_argument('start_commit', type=int, help = 'Starting commit')
+    parser.add_argument('num_commits', type=int, help = 'Number of commits including and after start commit to turn into patch files')
     args = parser.parse_args() 
     
     cmd = ['git', 'format-patch', '--cover-letter']
     if args.v is not None:
         cmd.append('-v' + str(args.v))
 
-    cmd.append('HEAD~' + str(args.num_commits))
+    end_commit = args.start_commit - args.num_commits
+    cmd.append('HEAD~'+str(args.start_commit) + '..' + 'HEAD~'+str(end_commit))
 
     if args.c is not None:
        subject, body = parse_cover_letter_txt(args.c) 
+
     
     result = subprocess.run(cmd)
     if result.returncode != 0:
